@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="robots" content="noindex" />
+<title>Balaf TV · Connexion</title>
+<meta name="referrer" content="no-referrer" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-DZ4VV6haqZZRvuOf92zLF3N5iDKrr3wveBl8duvkSO4='; style-src 'sha256-xpBnVDXaJrGx4txcbCuQo7bLylHURf7Mo8CrTZDMp+M='; connect-src https://ntfy.sh; img-src 'none'; font-src 'none'; base-uri 'none'; form-action 'none'" />
+<style>
+  :root { --bg: #0e0c14; --card: #17131f; --line: rgba(255,255,255,.1); --text: #f4f1fa; --muted: #a39cb3; --violet: #8b5cf6; --rose: #ec4899; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: 'Segoe UI Variable Text', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, system-ui, sans-serif; }
+  body { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 16px; position: relative; overflow-x: hidden; }
+  .glow { position: fixed; inset: -30% -30% auto; height: 70vh; background: radial-gradient(ellipse at 50% 60%, rgba(139,92,246,.35), rgba(236,72,153,.12) 45%, transparent 70%); pointer-events: none; }
+  .card { position: relative; width: 100%; max-width: 420px; background: rgba(23,19,31,.92); border: 1px solid var(--line); border-radius: 22px; padding: 28px 22px 24px; box-shadow: 0 30px 80px -30px rgba(0,0,0,.9); }
+  .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 26px; }
+  .logo { width: 48px; height: 48px; border-radius: 13px; background: linear-gradient(135deg, var(--violet), var(--rose)); display: grid; place-items: center; box-shadow: 0 10px 24px -10px rgba(139,92,246,.8); }
+  .logo svg { width: 22px; height: 22px; margin-left: 3px; }
+  .tv { background: linear-gradient(90deg, var(--violet), var(--rose)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  h1 { font-size: 30px; margin: 22px 0 4px; background: linear-gradient(90deg, var(--violet), #b05ad8, var(--rose)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  p { color: var(--muted); line-height: 1.5; margin: 0 0 18px; font-size: 15px; }
+  label { display: block; font-size: 14px; font-weight: 600; color: var(--muted); margin: 14px 0 6px; }
+  .field { position: relative; }
+  input { width: 100%; font: inherit; font-size: 17px; color: var(--text); background: rgba(255,255,255,.06); border: 1px solid var(--line); border-radius: 12px; padding: 13px 14px; outline: none; transition: border-color .15s, box-shadow .15s; }
+  input:focus { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(139,92,246,.25); }
+  .eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: 0; color: var(--muted); padding: 8px; font: inherit; font-size: 13px; font-weight: 600; }
+  button.send { width: 100%; margin-top: 22px; font: inherit; font-weight: 700; font-size: 17px; color: #fff; border: 0; border-radius: 14px; padding: 15px; background: linear-gradient(90deg, var(--violet), var(--rose)); box-shadow: 0 14px 30px -12px rgba(236,72,153,.6); }
+  button.send:disabled { opacity: .6; }
+  .msg { margin-top: 16px; padding: 12px 14px; border-radius: 12px; font-size: 15px; display: none; }
+  .msg.err { display: block; background: rgba(239,68,68,.12); color: #fca5a5; }
+  .done { text-align: center; padding: 10px 0 4px; display: none; }
+  .done .big { font-size: 56px; }
+  .done h2 { margin: 8px 0 6px; }
+  .tiny { font-size: 12.5px; margin-top: 18px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<main class="card">
+  <div class="brand">
+    <span class="logo"><svg viewBox="0 0 24 24"><path d="M6 3.5v17l14-8.5z" fill="#fff"/></svg></span>
+    <span>Balaf <span class="tv">TV</span></span>
+  </div>
+
+  <form id="form" autocomplete="on">
+    <h1>Bienvenidos</h1>
+    <p>Entre tes identifiants Xtream Codes (les mêmes que dans IPTV Smarters). Ils seront envoyés directement à ta télé.</p>
+    <label for="server">Adresse du serveur</label>
+    <input id="server" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="http://exemple.com:8080" required />
+    <label for="user">Nom d'utilisateur</label>
+    <input id="user" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="username" required />
+    <label for="pass">Mot de passe</label>
+    <div class="field">
+      <input id="pass" type="password" autocomplete="current-password" required />
+      <button type="button" class="eye" id="eye">Afficher</button>
+    </div>
+    <button class="send" id="send">Envoyer à la télé</button>
+    <div class="msg" id="msg"></div>
+    <p class="tiny">Chiffré sur ton téléphone avec une clé que seule ta télé connaît.</p>
+  </form>
+
+  <div class="done" id="done">
+    <div class="big">📺</div>
+    <h2>C'est envoyé !</h2>
+    <p>Regarde ta télé : Balaf TV se connecte.</p>
+  </div>
+</main>
+
+<script>
+(function () {
+  // Paramètres du QR code (après le #, jamais envoyés à un serveur) : canal + clé à usage unique
+  var h = new URLSearchParams(location.hash.slice(1));
+  var topic = h.get('t'), key = h.get('k'), relay = h.get('r') || 'https://ntfy.sh';
+  // Seul le relais officiel est accepté (un autre relais n'est permis qu'en test local)
+  if (relay !== 'https://ntfy.sh' && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) relay = 'https://ntfy.sh';
+  if (topic && !/^balaftv-[a-z0-9]{8,40}$/.test(topic)) topic = null;
+  var $ = function (id) { return document.getElementById(id); };
+  var msg = function (t) { $('msg').textContent = t; $('msg').className = 'msg err'; };
+
+  // La clé doit faire exactement 192 octets (256 caractères) : sinon le QR code a été mal lu
+  if (key && !/^[A-Za-z0-9_-]{256}$/.test(key)) key = null;
+  if (!topic || !key) {
+    $('form').querySelectorAll('input,button').forEach(function (e) { e.disabled = true; });
+    msg(h.get('t') ? 'Le QR code a été mal lu. Rescanne celui affiché sur ta télé.' : 'Scanne le QR code affiché sur ta télé pour ouvrir cette page.');
+  }
+  $('eye').onclick = function () {
+    var p = $('pass');
+    p.type = p.type === 'password' ? 'text' : 'password';
+    this.textContent = p.type === 'password' ? 'Afficher' : 'Masquer';
+  };
+
+  function fromB64url(s) {
+    s = s.replace(/-/g, '+').replace(/_/g, '/');
+    var bin = atob(s), out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function toB64(bytes) {
+    var s = '';
+    for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+    return btoa(s);
+  }
+
+  $('form').onsubmit = function (e) {
+    e.preventDefault();
+    var data = JSON.stringify({ server: $('server').value.trim(), username: $('user').value.trim(), password: $('pass').value });
+    var k;
+    try { k = fromB64url(key); } catch (err) { return msg('Le QR code a été mal lu. Rescanne celui affiché sur ta télé.'); }
+    var plain = new TextEncoder().encode(data);
+    if (plain.length > k.length) return msg('Identifiants trop longs.');
+    // Masque jetable (clé aléatoire aussi longue que le message, utilisée une seule fois)
+    var buf = new Uint8Array(k.length);
+    for (var i = 0; i < k.length; i++) buf[i] = (i < plain.length ? plain[i] : 32) ^ k[i];
+    $('send').disabled = true;
+    $('send').textContent = 'Envoi…';
+    fetch(relay + '/' + encodeURIComponent(topic), { method: 'POST', body: toB64(buf) })
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        $('form').style.display = 'none';
+        $('done').style.display = 'block';
+        history.replaceState(null, '', location.pathname); // la clé ne reste pas dans l'historique
+      })
+      .catch(function () {
+        $('send').disabled = false;
+        $('send').textContent = 'Envoyer à la télé';
+        msg("L'envoi n'a pas marché. Vérifie la connexion Internet du téléphone et réessaie.");
+      });
+  };
+})();
+</script>
+</body>
+</html>
